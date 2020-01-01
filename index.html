@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+	<title>普通MP4视频倍数调节器</title>
+	<style>
+		html,body{
+			width: 100%;
+			height: 100%;
+			margin: 0;
+			padding: 0;
+		}
+		body{
+			background-color: #3e3d47;
+		}
+		.url{
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100%;
+			width: 100%;
+			background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25' viewBox='0 0 1200 800'%3E%3Cdefs%3E%3CradialGradient id='a' cx='0' cy='800' r='800' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%23952d90'/%3E%3Cstop offset='1' stop-color='%23952d90' stop-opacity='0'/%3E%3C/radialGradient%3E%3CradialGradient id='b' cx='1200' cy='800' r='800' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%232e2d35'/%3E%3Cstop offset='1' stop-color='%232e2d35' stop-opacity='0'/%3E%3C/radialGradient%3E%3CradialGradient id='c' cx='600' cy='0' r='600' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%237b2474'/%3E%3Cstop offset='1' stop-color='%237b2474' stop-opacity='0'/%3E%3C/radialGradient%3E%3CradialGradient id='d' cx='600' cy='800' r='600' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%233e3d47'/%3E%3Cstop offset='1' stop-color='%233e3d47' stop-opacity='0'/%3E%3C/radialGradient%3E%3CradialGradient id='e' cx='0' cy='0' r='800' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%23ff0000'/%3E%3Cstop offset='1' stop-color='%23ff0000' stop-opacity='0'/%3E%3C/radialGradient%3E%3CradialGradient id='f' cx='1200' cy='0' r='800' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%231e1d23'/%3E%3Cstop offset='1' stop-color='%231e1d23' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect fill='url(%23a)' width='1200' height='800'/%3E%3Crect fill='url(%23b)' width='1200' height='800'/%3E%3Crect fill='url(%23c)' width='1200' height='800'/%3E%3Crect fill='url(%23d)' width='1200' height='800'/%3E%3Crect fill='url(%23e)' width='1200' height='800'/%3E%3Crect fill='url(%23f)' width='1200' height='800'/%3E%3C/svg%3E");
+			background-attachment: fixed;
+			background-size: cover;
+		}
+		.url-content{
+			margin: auto;
+			width: 50%;
+			text-align: center;
+			position: relative;
+		}
+		.content{
+			width: 100%;
+			height: 40px;
+			border: 1px solid #ffffff;
+			border-radius: 20px;
+			outline: none;
+			padding: 0 20px;
+			font-size: 16px;
+		}
+		.main{
+			display: none;
+			position: relative;
+			height: 100%;
+			width: 100%;
+		}
+		.video-box,video{
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
+		}
+		.icon-c{
+			width: 35px;
+			height: 35px;
+			position: absolute;
+			right: -38px;
+			bottom: 4px;
+		}
+		.controller{
+			position: absolute;
+			top: 5px;
+			left: 5px;
+			background-color: blue;
+			border-radius: 30px;
+			color: #ffffff;
+			opacity: 0.05;
+			border: 2px solid blue;
+			box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.5);
+		}
+		.controller:hover{
+			opacity: 1;
+		}
+		.dropbtn{
+			color: #000000;
+			background-color: #ffffff;
+			width: 50px;
+			height: 50px;
+			margin-bottom: 0;
+			border-radius: 25px;
+			outline: none;
+			border: 1px solid #999;
+		}
+		.dropdown-content{
+			font-size: 14px;
+			display: none;
+			width: 50px;
+			text-align: center;
+			border-bottom-left-radius: 25px;
+			border-bottom-right-radius: 25px;
+		}
+		.dropdown-content>ul{
+			padding-left: 0;
+			margin: 0;
+			padding: 10px 0 15px;
+		}
+		.dropdown-content>ul>li{
+			height: 30px;
+			cursor: pointer;
+			line-height: 30px;
+		}
+		.dropdown-content>ul>li:hover{
+			background-color: #1943FF;
+		}
+	</style>
+</head>
+<body>
+	<section class="url">
+		<div class="url-content">
+			<input id="url" class="content" type="text" placeholder="请输入要播放的视频地址">
+			<div class="icon-c" id="icon">
+				<svg t="1577851467742" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4526" width="35" height="35"><path d="M512 0C230.4 0 0 230.4 0 512s230.4 512 512 512 512-230.4 512-512S793.6 0 512 0z m0 981.333c-258.133 0-469.333-211.2-469.333-469.333S253.867 42.667 512 42.667 981.333 253.867 981.333 512 770.133 981.333 512 981.333z" p-id="4527" fill="#3e3d47"></path><path d="M672 441.6L501.333 328.533c-57.6-38.4-106.666-12.8-106.666 57.6v256c0 70.4 46.933 96 106.666 57.6L672 586.667C729.6 544 729.6 480 672 441.6z" p-id="4528" fill="#3e3d47"></path></svg>
+			</div>
+		</div>
+	</section>
+	<section class="main">
+		<div class="video-box">
+			<video controls id="video" src=""></video>
+		</div>
+		<div class="controller">
+			  <button class="dropbtn"><i>Speed</i></button>
+			  <div class="dropdown-content">
+			    <ul>
+			    	<li class="speed" speed="0.5">0.5x</li>
+			    	<li class="speed" speed="0.8">0.8x</li>
+			    	<li class="speed" speed="1.0">1.0x</li>
+			    	<li class="speed" speed="1.2">1.2x</li>
+			    	<li class="speed" speed="1.5">1.5x</li>
+			    	<li class="speed" speed="1.8">1.8x</li>
+			    	<li class="speed" speed="2.0">2.0x</li>
+			    </ul>
+			  </div>
+		</div>
+	</section>
+
+
+
+<script>
+	$("#icon").hover(function(){
+	    $("path").attr("fill","#fe0001");
+	},function(){
+	    $("path").attr("fill","#3e3d47");
+	});
+</script>
+<script>
+	myVid = document.getElementById("video");
+	$("#icon").click(function(){
+		var url = $("#url").val().trim();
+		if (url!='') {
+			$("#video").attr('src',url);
+			myVid = document.getElementById("video");
+			$(".url").fadeOut();
+			$(".main").fadeIn();
+		}else{
+			alert('还没有视频地址，无法播放')
+		}
+	})
+</script>
+<script>
+	$(".controller").click(function(){
+		$(".dropdown-content").slideToggle();
+	})
+</script>
+<script>
+	function setPlaySpeed(){
+		
+	}
+</script>
+<script>
+	$(".speed").click(function(){
+		var speed=$(this).attr("speed");
+		myVid.playbackRate=speed;
+	})
+</script>
+<script>
+	myVid.onended = function() 
+	{
+	   myVid.playbackRate=1;
+	};
+</script>
+</body>
+</html>
